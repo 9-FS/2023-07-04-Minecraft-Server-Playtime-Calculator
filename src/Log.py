@@ -36,7 +36,7 @@ class Log:
         zipped: bool
 
 
-        logging.info(f"Constructing Log from filepath=\"{filepath}\" and date=\"{date}\"...")
+        logging.debug(f"Constructing Log from filepath=\"{filepath}\" and date=\"{date}\"...")
         
         self.filename=os.path.basename(filepath)    #extract filename
         logging.debug(f"self.filename: {self.filename}")
@@ -66,6 +66,5 @@ class Log:
         logging.debug(f"self.content: {self.content}")
         
 
-        logging.debug("")
-        logging.info(f"\rConstructed Log from filepath=\"{filepath}\" and date=\"{date}\".")
+        logging.debug(f"\rConstructed Log from filepath=\"{filepath}\" and date=\"{date}\".")
         return

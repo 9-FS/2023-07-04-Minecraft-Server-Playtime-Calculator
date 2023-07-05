@@ -23,7 +23,7 @@ class Player:
         - name: the player name to set
         """
 
-        logging.info(f"Constructing Player from name=\"{name}\"...")
+        logging.debug(f"Constructing Player from name=\"{name}\"...")
 
         self.name=name  #set name manually
 
@@ -31,6 +31,6 @@ class Player:
         self.last_join=None
         self.playtime=dt.timedelta(seconds=0)
 
-        logging.info(f"\rConstructed Player from name=\"{name}\".")
+        logging.debug(f"\rConstructed Player from name=\"{name}\".")
 
         return

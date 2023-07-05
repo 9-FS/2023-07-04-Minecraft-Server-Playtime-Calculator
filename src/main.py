@@ -62,7 +62,7 @@ def main() -> None:
                     player_i=[player.name for player in players].index(re_match.groupdict()["player_name"]) #relevant player index
                     player_joined_dt=dt.datetime.combine(log.date, dt.time(int(re_match.groupdict()["time_hour"]), int(re_match.groupdict()["time_minute"]), int(re_match.groupdict()["time_second"])), dt.timezone.utc)
                     players[player_i].last_join=player_joined_dt                                            #enter last joined datetime
-                    logging.info(f"At {player_joined_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" joined the game.")
+                    logging.debug(f"At {player_joined_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" joined the game.")
                     players[player_i].is_online=True                                                        #joined the game, so is online
 
                 re_match=re.search(PLAYER_LEFT_PATTERN, log_line)                                           #see if log line matches player left
@@ -76,13 +76,13 @@ def main() -> None:
                         logging.warning(f"At {player_left_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" left the game without joining it before.")
                         continue
                     players[player_i].playtime+=(player_left_dt-players[player_i].last_join) #type:ignore
-                    logging.info(f"At {player_left_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" left the game after playing for {KFS.fstr.notation_tech((player_left_dt-players[player_i].last_join).total_seconds(), 2)}s. Total playtime: {KFS.fstr.notation_tech(players[player_i].playtime.total_seconds(), 2)}s") #type:ignore
+                    logging.debug(f"At {player_left_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" left the game after playing for {KFS.fstr.notation_tech((player_left_dt-players[player_i].last_join).total_seconds(), 2)}s. Total playtime: {KFS.fstr.notation_tech(players[player_i].playtime.total_seconds(), 2)}s") #type:ignore
                     players[player_i].is_online=False   #player left the game, so is offline
 
 
         players=sorted(players, key=lambda player: player.playtime.total_seconds(), reverse=True)   #sort players by playtime
         logging.info("Playtimes:")
-        logging.info("\n".join([f"{player.name}: {KFS.fstr.notation_tech(player.playtime.total_seconds(), 4)}s" for player in players]))
+        logging.info("\n".join([f"{player.name}: {KFS.fstr.notation_tech(player.playtime.total_seconds(), 0, round_static=True)}s" for player in players]))
 
         for player in players:
             if player.is_online==False: #only update score from log if currently offline, otherwise updated ingame
