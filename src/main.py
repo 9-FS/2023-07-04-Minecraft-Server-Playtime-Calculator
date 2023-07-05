@@ -82,7 +82,7 @@ def main() -> None:
 
         players=sorted(players, key=lambda player: player.playtime.total_seconds(), reverse=True)   #sort players by playtime
         logging.info("Playtimes:")
-        logging.info("\n".join([f"{player.name}: {KFS.fstr.notation_tech(player.playtime.total_seconds(), 2)}s" for player in players]))
+        logging.info("\n".join([f"{player.name}: {KFS.fstr.notation_tech(player.playtime.total_seconds(), 4)}s" for player in players]))
 
         for player in players:
             if player.is_online==False: #only update score from log if currently offline, otherwise updated ingame
