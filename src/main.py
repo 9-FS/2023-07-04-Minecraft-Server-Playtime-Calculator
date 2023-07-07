@@ -86,6 +86,6 @@ def main() -> None:
 
         for player in players:
             if player.is_online==False: #only update score from log if currently offline, otherwise updated ingame
-                exec_minecraft_server_command(f"scoreboard players set {player.name} player_playtime {round(player.playtime.total_seconds())}", CONFIG["minecraft_server_screen_name"]) #update scores ingame
+                exec_minecraft_server_command(f"scoreboard players set {player.name} playtime {round(player.playtime.total_seconds())}", CONFIG["minecraft_server_screen_name"]) #update scores ingame
 
         KFS.sleep.sleep_mod(1000)
