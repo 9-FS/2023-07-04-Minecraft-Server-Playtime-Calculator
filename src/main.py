@@ -89,4 +89,4 @@ def main() -> None:
                 player.playtime+=(dt.datetime.now(dt.timezone.utc)-player.last_join)                                                                                            #add playtime from last join until now #type:ignore
             exec_minecraft_server_command(f"scoreboard players set {player.name} playtime {round(player.playtime.total_seconds())}", CONFIG["minecraft_server_screen_name"])    #update scores ingame
 
-        KFS.sleep.sleep_mod(1000)
+        KFS.sleep.sleep_mod(5000)
