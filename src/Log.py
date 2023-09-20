@@ -16,9 +16,9 @@ class Log:
     Represents 1 log.
     """
 
-    date: dt.date   #date the logtimes refer to, from filename
-    filename: str   #filename
-    content: str    #content
+    date: dt.date   # date the logtimes refer to, from filename
+    filename: str   # filename
+    content: str    # content
 
     def __init__(self, filepath: str, date: None|dt.date=None) -> None:
         """
@@ -38,15 +38,15 @@ class Log:
 
         logging.debug(f"Constructing Log from filepath=\"{filepath}\" and date=\"{date}\"...")
         
-        self.filename=os.path.basename(filepath)    #extract filename
+        self.filename=os.path.basename(filepath)    # extract filename
         logging.debug(f"self.filename: {self.filename}")
 
 
         if date==None:
-            re_match=re.search(LOG_FILENAME_PATTERN, self.filename)                                                                                     #look if filename is in expected format, otherwise cannot parse date
+            re_match=re.search(LOG_FILENAME_PATTERN, self.filename)                                                                                     # look if filename is in expected format, otherwise cannot parse date
             if re_match==None:
                 raise ValueError(f"Error in {self.__init__.__name__}{inspect.signature(self.__init__)}: Given filename \"{self.filename}\" does not match the log filename pattern.")
-            self.date=dt.date(int(re_match.groupdict()["date_year"]), int(re_match.groupdict()["date_month"]), int(re_match.groupdict()["date_day"]))   #construct date from parsed information
+            self.date=dt.date(int(re_match.groupdict()["date_year"]), int(re_match.groupdict()["date_month"]), int(re_match.groupdict()["date_day"]))   # construct date from parsed information
         elif type(date)==dt.date:
             self.date=date
         else:
@@ -54,11 +54,11 @@ class Log:
         logging.debug(f"self.date: {self.date.strftime('%Y-%m-%d')}")
 
 
-        zipped=os.path.splitext(self.filename)[1]==".gz"    #if log file extension is .gz: file is zipped
-        if zipped==True:                                    #if file zipped: decompress first to read content
+        zipped=os.path.splitext(self.filename)[1]==".gz"    # if log file extension is .gz: file is zipped
+        if zipped==True:                                    # if file zipped: decompress first to read content
             with gzip.open(filepath, "rt") as log_file:
                 self.content=log_file.read()
-        elif zipped==False:                                 #if file not zipped: read content normally
+        elif zipped==False:                                 # if file not zipped: read content normally
             with open(filepath, "rt") as log_file:
                 self.content=log_file.read()
         else:
