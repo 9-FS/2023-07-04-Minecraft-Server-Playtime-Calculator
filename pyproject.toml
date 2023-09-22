@@ -2,10 +2,10 @@
 authors     = ["9FS <pray4spam@googlemail.com>"]
 description = ""
 license     = "MIT"
-name        = "Minecraft Server Playtime Calculator"
+name        = "x"
 readme      = "readme.md"
 repository  = "https://github.com/9-FS/2023-07-04-Minecraft-Server-Playtime-Calculator"
-version     = "1.0.0"
+version     = "1.0.1"
 
 [tool.poetry.dependencies]
 kfsconfig = "^1.0.0"
