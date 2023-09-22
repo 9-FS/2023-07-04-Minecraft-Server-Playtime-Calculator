@@ -1,7 +1,10 @@
 # Copyright (c) 2023 구FS, all rights reserved. Subject to the MIT licence in `licence.md`.
 import datetime as dt
 import json
-import KFS.config, KFS.fstr, KFS.log, KFS.sleep
+from KFSconfig import KFSconfig
+from KFSfstr   import KFSfstr
+from KFSlog    import KFSlog
+from KFSsleep  import KFSsleep
 import logging
 import os
 import re
@@ -10,7 +13,7 @@ from Log                 import Log
 from Player              import Player
 
 
-@KFS.log.timeit
+@KFSlog.timeit
 def main() -> None:
     CONFIG: dict[str, str]                      # minecraft_server_screen_name, log_path
     CONFIG_CONTENT_DEFAULT: dict[str, str]={    # linux screen name to attach to for server commands
@@ -25,7 +28,7 @@ def main() -> None:
     players: list[Player]                       # list of all players and their playtime
 
     try:
-        CONFIG=json.loads(KFS.config.load_config("config.json", json.dumps(CONFIG_CONTENT_DEFAULT, indent=4)))
+        CONFIG=json.loads(KFSconfig.load_config("config.json", json.dumps(CONFIG_CONTENT_DEFAULT, indent=4)))
     except FileNotFoundError:
         return
     
@@ -75,18 +78,18 @@ def main() -> None:
                         logging.warning(f"At {player_left_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" left the game without joining it before.")
                         continue
                     players[player_i].playtime+=(player_left_dt-players[player_i].last_join) # type:ignore
-                    logging.debug(f"At {player_left_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" left the game after playing for {KFS.fstr.notation_tech((player_left_dt-players[player_i].last_join).total_seconds(), 2)}s. Total playtime: {KFS.fstr.notation_tech(players[player_i].playtime.total_seconds(), 2)}s") # type:ignore
+                    logging.debug(f"At {player_left_dt.strftime('%Y-%m-%dT%H:%M:%S')} player \"{players[player_i].name}\" left the game after playing for {KFSfstr.notation_tech((player_left_dt-players[player_i].last_join).total_seconds(), 2)}s. Total playtime: {KFSfstr.notation_tech(players[player_i].playtime.total_seconds(), 2)}s") # type:ignore
                     players[player_i].last_join=None
                     players[player_i].is_online=False   # player left the game, so is offline
 
 
         players=sorted(players, key=lambda player: player.playtime.total_seconds(), reverse=True)   # sort players by playtime
         logging.info("Playtimes:")
-        logging.info("\n".join([f"{player.name}: {KFS.fstr.notation_tech(player.playtime.total_seconds(), 0, round_static=True)}s" for player in players]))
+        logging.info("\n".join([f"{player.name}: {KFSfstr.notation_tech(player.playtime.total_seconds(), 0, round_static=True)}s" for player in players]))
 
         for player in players:
             if player.is_online==True:                                                                                                                                          # if player currently online:
                 player.playtime+=(dt.datetime.now(dt.timezone.utc)-player.last_join)                                                                                            # add playtime from last join until now # type:ignore
             exec_minecraft_server_command(f"scoreboard players set {player.name} playtime {round(player.playtime.total_seconds())}", CONFIG["minecraft_server_screen_name"])    # update scores ingame
 
-        KFS.sleep.sleep_mod(5000)
+        KFSsleep.sleep_mod(5000)

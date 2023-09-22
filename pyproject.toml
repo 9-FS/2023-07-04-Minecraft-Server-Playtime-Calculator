@@ -8,11 +8,11 @@ repository  = "https://github.com/9-FS/2023-07-04-Minecraft-Server-Playtime-Calc
 version     = "1.0.0"
 
 [tool.poetry.dependencies]
-KFS    = "^1.0.0"
-python = "^3.11.0, <3.13"
-
-[tool.poetry.group.dev.dependencies]
-pyinstaller = "^5.13.2"
+kfsconfig = "^1.0.0"
+kfsfstr   = "^1.0.0"
+kfslog    = "^1.0.0"
+kfssleep  = "^1.0.0"
+python    = "^3.11.0"
 
 [build-system]
 build-backend = "poetry.core.masonry.api"
