@@ -1,5 +1,4 @@
 *.exe
-*.json
 *.log
 *.pyc
 *.token
@@ -9,4 +8,6 @@
 doc_templates/
 log/
 
+config/settings.json
+Dockerfile
 tests/test.py

@@ -15,20 +15,21 @@ from Player              import Player
 
 @KFSlog.timeit
 def main() -> None:
-    CONFIG: dict[str, str]                      # minecraft_server_screen_name, log_path
-    CONFIG_CONTENT_DEFAULT: dict[str, str]={    # linux screen name to attach to for server commands
-        "minecraft_server_screen_name": "",
-        "log_path": "",
-    }
+    
     log: Log                                    # 1 log file
     player_joined_dt: dt.datetime               # when did player join
     PLAYER_JOINED_PATTERN=r"^(\[(?P<time_hour>[0-2][0-9]):(?P<time_minute>[0-5][0-9]):(?P<time_second>[0-5][0-9])] \[.*?]: (?P<player_name>[0-9a-zA-Z_]+) joined the game)$"
     player_left_dt: dt.datetime                 # when did player leave
     PLAYER_LEFT_PATTERN=r"^(\[(?P<time_hour>[0-2][0-9]):(?P<time_minute>[0-5][0-9]):(?P<time_second>[0-5][0-9])] \[.*?]: (?P<player_name>[0-9a-zA-Z_]+) left the game)$"
     players: list[Player]                       # list of all players and their playtime
+    settings: dict[str, str]                    # minecraft_server_screen_name, log_path
+    settings_default: dict[str, str]={          # linux screen name to attach to for server commands
+        "minecraft_server_screen_name": "",
+        "log_path": "",
+    }
 
     try:
-        CONFIG=json.loads(KFSconfig.load_config("config.json", json.dumps(CONFIG_CONTENT_DEFAULT, indent=4)))
+        settings=json.loads(KFSconfig.load_config("./config/settings.json", json.dumps(settings_default, indent=4)))
     except FileNotFoundError:
         return
     
@@ -37,17 +38,17 @@ def main() -> None:
         players=[]  # reset player data
 
         logging.info("--------------------------------------------------")
-        logging.info(f"Loading log filenames from \"{CONFIG['log_path']}\"...")
-        log_filenames=sorted([filename for filename in os.listdir(CONFIG["log_path"]) if os.path.isfile(os.path.join(CONFIG["log_path"], filename))==True])
-        logging.info(f"\rLoaded log filenames from \"{CONFIG['log_path']}\".")
+        logging.info(f"Loading log filenames from \"{settings['log_path']}\"...")
+        log_filenames=sorted([filename for filename in os.listdir(settings["log_path"]) if os.path.isfile(os.path.join(settings["log_path"], filename))==True])
+        logging.info(f"\rLoaded log filenames from \"{settings['log_path']}\".")
         logging.debug(log_filenames)
 
         for log_filename in log_filenames:              # go through all log filenames
             match os.path.splitext(log_filename)[1]:    # create Log object from filename, construction depends on file extension (zipped or not zipped)
                 case ".gz":
-                    log=Log(os.path.join(CONFIG["log_path"], log_filename))
+                    log=Log(os.path.join(settings["log_path"], log_filename))
                 case ".log":
-                    log=Log(os.path.join(CONFIG["log_path"], log_filename), dt.date.today())
+                    log=Log(os.path.join(settings["log_path"], log_filename), dt.date.today())
                 case _:
                     logging.warning(f"Log file \"{log_filename}\" has neither \".gz\" nor \".log\" as file extension. Skipping...")
                     continue
@@ -90,6 +91,6 @@ def main() -> None:
         for player in players:
             if player.is_online==True:                                                                                                                                          # if player currently online:
                 player.playtime+=(dt.datetime.now(dt.timezone.utc)-player.last_join)                                                                                            # add playtime from last join until now # type:ignore
-            exec_minecraft_server_command(f"scoreboard players set {player.name} playtime {round(player.playtime.total_seconds())}", CONFIG["minecraft_server_screen_name"])    # update scores ingame
+            exec_minecraft_server_command(f"scoreboard players set {player.name} playtime {round(player.playtime.total_seconds())}", settings["minecraft_server_screen_name"])  # update scores ingame
 
         KFSsleep.sleep_mod(5000)
